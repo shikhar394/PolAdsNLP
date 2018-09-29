@@ -6,6 +6,7 @@ import os
 import re
 import sys
 import time
+from pprint import pprint
 from collections import namedtuple
 
 import psycopg2
@@ -52,11 +53,19 @@ if __name__ == "__main__":
   labels_cursor.execute(IDQuery)
   for ID in labels_cursor.fetchall():
     IDs.add(ID[0])
-
+  IDs = tuple(IDs)
+  #print(IDs)
   TextQuery = """
-    select archive_id, text from ads where archive_id in (%s)
+    select archive_id, text from ads where archive_id IN %s;
     """ 
-  ads_cursor.execute(TextQuery, IDs)
+  #print(ads_cursor.mogrify(TextQuery, (IDs,)))
+  ads_cursor.execute(TextQuery, (IDs, ))
 
   for result in ads_cursor.fetchall():
     TextCorpus[result['archive_id']] = CleanText(result['text'])
+
+  #pprint(TextCorpus)
+  with open('TextCorpus.json', 'w') as f:
+    json.dump(TextCorpus, f, indent = 4)
+  labels_connection.close()
+  ads_connection.close()
