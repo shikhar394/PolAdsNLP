@@ -1,3 +1,7 @@
 *.cfg
 */PolAdsNLP/*
+<<<<<<< HEAD
 PolAdsNLP/*
+=======
+*.json
+>>>>>>> ba367aa793109cc6af8b160fdb937fd675416555
